@@ -1,0 +1,93 @@
+#include <iostream>
+#include <fstream>
+#include <string>
+using namespace std;
+
+class User {
+private:
+    string username;
+    string password;
+
+public:
+    User(string uname, string pword) {
+        username = uname;
+        password = pword;
+    }
+
+    string getUsername() {
+        return username;
+    }
+
+    string getPassword() {
+        return password;
+    }
+
+    void saveToFile() {
+        ofstream file("database.txt", ios::app); // Save in project folder
+        if (file.is_open()) {
+            file << username << " " << password << endl;
+            file.close();
+            cout << "Registration successful!" << endl;
+        } else {
+            cout << "Error opening database file." << endl;
+        }
+    }
+};
+
+void registerUser() {
+    string username, password;
+    cout << "Enter Username: ";
+    cin >> username;
+    cout << "Enter Password: ";
+    cin >> password;
+
+    User newUser(username, password);
+    newUser.saveToFile();
+}
+
+void loginUser() {
+    string username, password, u, p;
+    bool loginSuccess = false;
+
+    cout << "Enter Username: ";
+    cin >> username;
+    cout << "Enter Password: ";
+    cin >> password;
+
+    ifstream file("database.txt"); // Read from project folder
+    if (file.is_open()) {
+        while (file >> u >> p) {
+            if (u == username && p == password) {
+                loginSuccess = true;
+                break;
+            }
+        }
+        file.close();
+    } else {
+        cout << "Error opening database file for login." << endl;
+    }
+
+    if (loginSuccess) {
+        cout << "Login Successful! Welcome, " << username << "!" << endl;
+    } else {
+        cout << "Login Failed! Please check your credentials." << endl;
+    }
+}
+
+int main() {
+    int choice;
+    cout << "1. Register" << endl;
+    cout << "2. Login" << endl;
+    cout << "Enter choice: ";
+    cin >> choice;
+
+    if (choice == 1) {
+        registerUser();
+    } else if (choice == 2) {
+        loginUser();
+    } else {
+        cout << "Invalid Choice!" << endl;
+    }
+
+    return 0;
+}
